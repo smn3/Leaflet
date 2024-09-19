@@ -401,10 +401,17 @@ export const Layers = Control.extend({
 				this._map.removeLayer(removedLayers[i]);
 			}
 		}
+
+		// Remove all layers and reinsert them to maintain order, otherwise the added
+		// layers are placed at the bottom of the list and displayed above the others
+		// regardless of sortLayer and autoZIndex
 		for (let i = 0; i < addedLayers.length; i++) {
-			if (!this._map.hasLayer(addedLayers[i])) {
-				this._map.addLayer(addedLayers[i]);
+			if (this._map.hasLayer(addedLayers[i])) {
+				this._map.removeLayer(addedLayers[i]);
 			}
+		}
+		for (let i = 0; i < addedLayers.length; i++) {
+			this._map.addLayer(addedLayers[i]);
 		}
 
 		this._handlingClick = false;
